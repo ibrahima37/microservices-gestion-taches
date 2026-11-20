@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    #registry-fetch-interval-seconds: 5   # rafraîchit toutes les 5 secondes
+
+logging:
+  level:
+    org.springframework.web.cors: DEBUG
+    org.springframework.cloud.gateway: TRACE
+
+spring:
+  application:
+    name: gateway-service
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+      routes:
+        # Tache Service
+        - id: tache-categories
+          uri: lb://tache-service
+          predicates:
+            - Path=/api/categories/**
+        - id: tache-tache
+          uri: lb://tache-service
+          predicates:
+            - Path=/api/taches/**
+
+        # Utilisateur Service
+        - id: utilisateur-auth
+          uri: lb://utilisateur-service
+          predicates:
+            - Path=/api/auth/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true

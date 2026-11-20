@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: tache-service
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  cloud:
+    config:
+      request-connect-timeout: 10000
+      request-read-timeout: 10000
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gestion-tache
+    username: dashroot
+    password: dashroot
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.netflix.eureka: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+jwt:
+  secret: 6f2c8e13f3d4c7e98d5a6b7c8d9e0f1234567890abcdef1234567890abcdef
+  expiration: 86400000
